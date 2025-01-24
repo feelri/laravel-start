@@ -1,9 +1,9 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "feelri/laravel-start",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "description": "Laravel Start 是一个快速开发框架，基于 Laravel 框架，封装了常用功能，简化开发流程，提高开发效率。",
+    "keywords": ["Laravel Start", "Quick Development", "laravel", "framework"],
     "license": "MIT",
     "require": {
         "php": "^8.2",
