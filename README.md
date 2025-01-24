@@ -9,7 +9,7 @@
 Laravel Start 是一个快速开发框架，基于 Laravel 框架，封装了常用功能，简化开发流程，提高开发效率。
 
 ## 快速开始
-#### 1、【必须】安装
+#### 【必须】安装
 ```bash
 composer create-project feelri/laravel-start
 ```
@@ -18,26 +18,27 @@ composer create-project feelri/laravel-start
 git clone https://github.com/feelri/laravel-start.git
 ```
 
-#### 2、【必须】安装api相关（默认使用 Laravel Sanctum 授权）
+#### 【必须】进入项目
 ```bash
-php artisan install:api
+cd laravel-start
 ```
->【可选】发布 Sanctum 相关文件
+
+#### 【可选】发布 Sanctum 相关文件
 ```bash
 php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider" 
 ```
 
-#### 3、【必须】执行迁移文件
-```bash
-php artisan migrate
-```
-
-#### 4、【可选】填充默认数据
+#### 【可选】填充默认数据
 ```bash
 php artisan db:seed
 ```
 
-#### 5、【可选】错误日志队列
+#### 【可选】启动错误日志队列
 ```bash
 php artisan queue:work --queue reportException
+```
+
+#### 【可选】启动内置服务
+```bash
+php artisan serve
 ```
