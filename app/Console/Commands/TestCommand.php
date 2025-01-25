@@ -25,7 +25,6 @@ class TestCommand extends Command
      */
     public function handle(): void
     {
-		throw new \Exception(123123);
 		$this->info('Hello, Feelri');
     }
 }
