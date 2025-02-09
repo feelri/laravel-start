@@ -15,8 +15,8 @@ return new class extends Migration
         Schema::create('permission', function (Blueprint $table) {
             $table->id();
             $table->integer('parent_id')->nullable()->comment('父级编号');
-			$table->integer('left')->comment('区间');
-			$table->integer('right')->comment('区间');
+			$table->integer('left')->nullable()->comment('区间');
+			$table->integer('right')->nullable()->comment('区间');
 			$table->tinyInteger('type')->default(1)->comment('类型：1-菜单、2-权限');
 			$table->string('name', 50)->default('')->comment('名称');
 			$table->string('icon', 50)->default('')->comment('icon');
