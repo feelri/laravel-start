@@ -123,7 +123,7 @@ class PermissionService
 		if (!$isCache || !$data = Cache::get($cacheKey)) {
 			$result = Permission::query()->where('is_show', BoolIntEnum::True->value);
 
-			$isCache && $result->selectRaw('id, parent_id, type, name, path, component, icon, uri, method, `rank`');
+			$isCache && $result->selectRaw('id, parent_id, `left`, `right`, type, name, path, component, icon, uri, method, `rank`');
 
 			if ($type) {
 				$result = $result->where('type', $type->value);
