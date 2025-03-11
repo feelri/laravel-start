@@ -190,32 +190,8 @@ return [
     */
 
     'attributes' => [
-        'account' => 'Account',
-        'email' => 'Email',
-        'mobile' => 'Mobile',
-        'password' => 'Password',
-        'old_password' => 'Old Password',
-        'new_password' => 'New Password',
-        'verify_token' => 'CAPTCHA',
-        'name' => 'Name',
-        'nickname' => 'Nickname',
-        'gender' => 'Gender',
-        'avatar' => 'Avatar',
-        'role' => 'Role',
-        'is_disable' => 'Is Disabled',
-        'description' => 'Description',
-        'rank' => 'Weight',
-        'type' => 'Type',
-        'permission_ids' => 'Permission Groups',
-        'icon' => 'Icon',
-        'uri' => 'Route',
-        'method' => 'Request Method',
-        'component' => 'Component Path',
-        'is_show' => 'Is Visible',
-        'verify_code' => 'Verification Code',
-        'sms_code' => 'SMS Code',
-        'parent_id' => 'Parent ID',
-        'file' => 'File'
+        '账号'   => 'Account',
+        '密码'   => 'Password',
     ],
 
 ];

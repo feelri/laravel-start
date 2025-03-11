@@ -2,6 +2,7 @@
 
 use App\Http\AdminApi\Middleware\PermissionMiddleware;
 use App\Http\Api\Middleware\AuthenticateMiddleware;
+use App\Http\Api\Middleware\LocalizationMiddleware;
 use App\Http\Api\Middleware\ThrottleWithRedisMiddleware;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance;
@@ -43,6 +44,6 @@ return function (Middleware $middleware) {
 		/**
 		 * 自定义中间件
 		 */
-//		->append()
+		->append(LocalizationMiddleware::class);
 	;
 };

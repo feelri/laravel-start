@@ -4,18 +4,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | 密码重置语言行
+    | Password Reset Language Lines
     |--------------------------------------------------------------------------
     |
-    | 以下语言行是密码重置操作中由密码代理返回的默认消息，
-    | 比如密码更新尝试失败时的无效密码/重置令牌等情况。
+    | The following language lines are the default lines which match reasons
+    | that are given by the password broker for a password update attempt
+    | outcome such as failure due to an invalid password / reset token.
     |
     */
 
-    'reset' => '您的密码已重置。',
-    'sent' => '我们已经发送密码重置链接到您的邮箱。',
-    'throttled' => '请稍候再试。',
-    'token' => '密码重置令牌无效。',
-    'user' => "找不到使用该邮箱地址的用户。",
+    'reset' => 'Your password has been reset.',
+    'sent' => 'We have emailed your password reset link.',
+    'throttled' => 'Please wait before retrying.',
+    'token' => 'This password reset token is invalid.',
+    'user' => "We can't find a user with that email address.",
 
 ];

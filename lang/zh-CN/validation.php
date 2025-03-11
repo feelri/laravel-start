@@ -220,6 +220,11 @@ return [
 		'verify_code'    => '验证码',
 		'sms_code'       => '短信验证码',
 		'parent_id'      => '父级编号',
-		'file'           => '文件'
+		'file'           => '文件',
+        'district'       => '地区',
+        'address'        => '地址',
+        'phone'          => '电话',
+        'shop'           => '门店',
+        'shop_role'      => '门店员工角色',
 	],
 ];

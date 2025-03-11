@@ -4,16 +4,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | 认证语言行
+    | Authentication Language Lines
     |--------------------------------------------------------------------------
     |
-    | 以下语言行用于在认证过程中需要显示给用户的各种消息。
-    | 您可以根据应用程序的需求自由修改这些语言行。
+    | The following language lines are used during authentication for various
+    | messages that we need to display to the user. You are free to modify
+    | these language lines according to your application's requirements.
     |
     */
 
-    'failed' => '用户名或密码错误。',
-    'password' => '提供的密码不正确。',
-    'throttle' => '登录尝试次数过多，请在 :seconds 秒后重试。',
+    'failed' => 'These credentials do not match our records.',
+    'password' => 'The provided password is incorrect.',
+    'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
 
 ];
