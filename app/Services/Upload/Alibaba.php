@@ -6,14 +6,13 @@ use App\Enums\Model\FileUploadFromEnum;
 use App\Exceptions\ErrorException;
 use App\Models\FileUpload;
 use App\Services\Cloud\Alibaba\AlibabaService;
-use \Exception;
+use Exception;
 
 class Alibaba extends \App\Services\Cloud\Alibaba\Alibaba implements AsyncUploadInterface
 {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->config = $this->config['OSS'];
 	}
 
 	/**
@@ -29,7 +28,7 @@ class Alibaba extends \App\Services\Cloud\Alibaba\Alibaba implements AsyncUpload
 
 		// 获取 aliyun oss 配置
 		$data['Credentials']['Region'] = $this->config['region'];
-		$data['Credentials']['Bucket'] = $this->config['bucket'];
+		$data['Credentials']['Bucket'] = $this->config['OSS']['bucket'];
 
 		return $data['Credentials'];
 	}
@@ -65,7 +64,7 @@ class Alibaba extends \App\Services\Cloud\Alibaba\Alibaba implements AsyncUpload
 			]
 		);
 		if (!$file) {
-			throw new ErrorException(__('messages.file_write_failed'));
+			throw new ErrorException("文件写入失败");
 		}
 
 		return $file;

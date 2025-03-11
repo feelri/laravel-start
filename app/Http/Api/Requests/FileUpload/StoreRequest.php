@@ -18,7 +18,7 @@ class StoreRequest extends BaseRequest
     public function rules(): array
     {
 		$suffixImplode = FileUploadSuffixEnum::implode();
-		$maxSize = ConfigService::static()->key(ConfigKeyEnum::FileUpload)->get('max_size', 0);
+		$maxSize = ConfigService::static()->key(ConfigKeyEnum::FileUpload)->get('max_size', 2);
 		$maxSize = ceil(bcmul($maxSize, 1024, 2));
         return [
             'file'       => "required|file|mimes:{$suffixImplode}|max:{$maxSize}",
