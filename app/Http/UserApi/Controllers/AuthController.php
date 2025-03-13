@@ -144,8 +144,8 @@ class AuthController extends Controller
 		}
 
 		// 生成 token
-		$token = Auth::guard('worker')->login($oauth->source);
-		$data  = $this->dataWithToken($token);
+		$tokenName = 'auth';
+		$data  = $this->dataWithToken($oauth->source->createToken($tokenName));
 		return $this->response($data, __('messages.login.success'));
 	}
 

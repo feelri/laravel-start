@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
 		$admin->roles()->attach([$role->id]);
 
 		User::query()->create([
-			'account'  => 'user',
+			'mobile'   => 'user',
 			'nickname' => 'user',
 			'password' => Hash::make('123456'),
 		]);
