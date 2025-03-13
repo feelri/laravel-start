@@ -66,8 +66,11 @@ class WechatMiniProgramService
 	 */
 	public function code2Session(string $code): array
 	{
-		$response = $this->client()->postJson('/sns/jscode2session', [
-			'code'	=> $code
+		$response = $this->client()->get('/sns/jscode2session', [
+			'appid'      => $this->config['app_id'],
+			'secret'     => $this->config['secret'],
+			'js_code'    => $code,
+			'grant_type' => 'authorization_code',
 		]);
 		return $response->toArray();
 	}

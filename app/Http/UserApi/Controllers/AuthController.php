@@ -6,14 +6,17 @@ use App\Enums\HTTPCodeEnum;
 use App\Enums\Model\ModelAliasEnum;
 use App\Enums\Model\UserOauthFromEnum;
 use App\Exceptions\AuthException;
+use App\Exceptions\ForbiddenException;
 use App\Exceptions\ParameterException;
 use App\Exceptions\ResourceException;
 use App\Http\UserApi\Requests\Auth\RepassRequest;
 use App\Http\UserApi\Requests\Auth\UpdateMeRequest;
 use App\Http\UserApi\Requests\Auth\AuthLoginRequest;
+use App\Http\UserApi\Requests\Auth\AuthRegisterRequest;
 use App\Models\Oauth;
 use App\Models\User\User;
 use App\Services\Cloud\Tencent\WechatMiniProgramService;
+use App\Services\OpenSSLTokenService;
 use EasyWeChat\Kernel\Exceptions\BadResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -42,8 +45,8 @@ class AuthController extends Controller
 	 */
 	public function login(AuthLoginRequest $request): JsonResponse
 	{
-		$params = $request->only(['account', 'password']);
-		$user = User::query()->where('account', $params['account'])->first();
+		$params = $request->only(['mobile', 'password']);
+		$user = User::query()->where('mobile', $params['account'])->first();
 		if (!$user) {
 			throw new ResourceException(__('message.login.auth_fail'));
 		}
@@ -54,6 +57,8 @@ class AuthController extends Controller
 
 		// 生成 token
 		$token = DB::transaction(function () use ($user) {
+			$user->last_login_at = now();
+
 			$tokenName = 'auth';
 			$user->tokens()->where('name', $tokenName)->delete();
 			return $user->createToken($tokenName);
@@ -62,6 +67,45 @@ class AuthController extends Controller
 		return $this->response($data, __('messages.login.success'));
 	}
 
+	/**
+	 * 注册
+	 *
+	 * @param AuthRegisterRequest $request
+	 * @return JsonResponse
+	 * @throws ForbiddenException
+	 * @throws ResourceException
+	 */
+	public function register(AuthRegisterRequest $request): JsonResponse
+	{
+		$params = $request->only(['name', 'nickname', 'avatar', 'mobile', 'raw']);
+		$user = User::query()->where('mobile', $params['mobile'])->first();
+		if ($user) {
+			throw new ResourceException('账号已被使用');
+		}
+
+		$rawData = (new OpenSSLTokenService())->decrypt($params['raw']);
+		if (!$rawData) {
+			throw new ForbiddenException('非法操作');
+		}
+
+		$token = DB::transaction(function () use ($params, $rawData) {
+			$user = User::query()->create([
+				'name'          => $params['name'],
+				'nickname'      => $params['nickname'],
+				'avatar'        => $params['avatar'],
+				'mobile'        => $params['mobile'],
+				'last_login_at' => now()
+			]);
+
+			$user->oauth()->create($rawData);
+			$user->last_login_at = now();
+			$tokenName           = 'auth';
+			$user->tokens()->where('name', $tokenName)->delete();
+			return $user->createToken($tokenName);
+		});
+		$data  = $this->dataWithToken($token);
+		return $this->response($data, '注册成功已自动登录');
+	}
 
 	/**
 	 * 微信小程序登录
@@ -85,17 +129,18 @@ class AuthController extends Controller
 		}
 		$session = (new WechatMiniProgramService)->code2Session($code);
 		if (!empty($session['errcode'])) {
-			throw new AuthException("授权失败");
+			throw new AuthException("授权失败：{$session['errmsg']}");
 		}
 
 		$where = [
-			'from'   => UserOauthFromEnum::WechatMiniProgram->value,
+			'from'        => UserOauthFromEnum::WechatMiniProgram->value,
 			'source_type' => ModelAliasEnum::User->getName(),
-			'openid' => $session['openid'],
+			'openid'      => $session['openid'],
 		];
 		$oauth = Oauth::query()->with('source')->where($where)->first();
 		if (!$oauth) {
-			throw new AuthException('未绑定手机号', error: HTTPCodeEnum::ErrorAuthMobile);
+			$raw = (new OpenSSLTokenService)->encrypt($where);
+			return $this->response(['raw'=>$raw]);
 		}
 
 		// 生成 token

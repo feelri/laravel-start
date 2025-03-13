@@ -4,10 +4,13 @@ namespace App\Models\User;
 
 use App\Enums\Model\ConfigKeyEnum;
 use App\Models\Authenticatable;
+use App\Models\Oauth;
 use App\Services\Model\ConfigService;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Config;
@@ -90,10 +93,10 @@ class User extends Authenticatable
 
 	/**
 	 * 关联第三方授权
-	 * @return HasMany
+	 * @return MorphOne
 	 */
-	public function oauth(): HasMany
+	public function oauth(): MorphOne
 	{
-		return $this->hasMany(UserOauth::class);
+		return $this->morphOne(Oauth::class, 'source');
 	}
 }

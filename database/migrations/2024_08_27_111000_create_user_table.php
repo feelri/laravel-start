@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('user', function (Blueprint $table) {
             $table->id();
-            $table->string('account', 20)->unique()->comment('账号');
+            $table->string('mobile', 20)->unique()->comment('手机号');
             $table->string('password', 100)->nullable()->comment('密码');
             $table->string('name', 50)->nullable()->comment('姓名');
             $table->string('nickname', 50)->nullable()->comment('昵称');

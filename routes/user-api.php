@@ -2,6 +2,7 @@
 
 use App\Http\Api\Controllers\EnumController;
 use App\Http\UserApi\Controllers\AuthController;
+use App\Http\UserApi\Controllers\WordBookController;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\Route;
  */
 Route::post('/auth/login/wechat-mini-program', [AuthController::class, 'loginByWechatMiniProgram'])->withoutMiddleware('auth:user'); // 微信小程序登录
 Route::post('/auth/login', [AuthController::class, 'login'])->withoutMiddleware('auth:user'); // 登录
+Route::post('/auth/register', [AuthController::class, 'register'])->withoutMiddleware('auth:user')->withoutMiddleware('auth:user'); // 注册
 Route::post('/auth/refresh', [AuthController::class, 'refresh']); // 刷新token
 Route::get('/auth/me', [AuthController::class, 'me']); // 个人信息
 Route::delete('/auth/logout', [AuthController::class, 'logout']); // 退出登录
@@ -21,3 +23,10 @@ Route::post('/auth/bind-wechat-mini-program', [AuthController::class, 'bindByWec
  * 枚举
  */
 Route::get('/enums/{enum}', EnumController::class)->withoutMiddleware(['auth:user']); // 拥有的权限菜单
+
+/**
+ * 词书
+ */
+Route::get('/word_book/lists', [WordBookController::class, 'lists']);
+Route::get('/word_book/detail/{detail}', [WordBookController::class, 'detail']);
+Route::post('/word_book/purchase', [WordBookController::class, 'purchase']);
