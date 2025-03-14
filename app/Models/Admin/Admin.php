@@ -11,40 +11,41 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 
 class Admin extends Authenticatable
 {
-    use HasFactory, Notifiable, SoftDeletes;
+	use HasFactory, Notifiable, SoftDeletes;
 
-    /**
-     * 类型转换
-     * @return string[]
-     */
-    public function casts(): array
-    {
-        return [
-            'id'            => 'integer',
-            'account'       => 'string',
-            'password'      => 'hashed',
-            'name'          => 'string',
-            'nickname'      => 'string',
-            'avatar'        => 'string',
-            'last_login_at' => 'datetime:Y-m-d H:i:s',
-            'created_at'    => 'datetime:Y-m-d H:i:s',
-            'updated_at'    => 'datetime:Y-m-d H:i:s',
-        ];
-    }
+	/**
+	 * 类型转换
+	 * @return string[]
+	 */
+	public function casts(): array
+	{
+		return [
+			'id'            => 'integer',
+			'account'       => 'string',
+			'password'      => 'hashed',
+			'name'          => 'string',
+			'nickname'      => 'string',
+			'avatar'        => 'string',
+			'last_login_at' => 'datetime:Y-m-d H:i:s',
+			'created_at'    => 'datetime:Y-m-d H:i:s',
+			'updated_at'    => 'datetime:Y-m-d H:i:s',
+		];
+	}
 
-    protected $guarded = [];
+	protected $guarded = [];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password', 'deleted_at'
-    ];
+	/**
+	 * The attributes that should be hidden for serialization.
+	 *
+	 * @var array<int, string>
+	 */
+	protected $hidden = [
+		'password', 'deleted_at'
+	];
 
 	protected $appends = [
 		'is_disable_label'
@@ -59,8 +60,13 @@ class Admin extends Authenticatable
 		$service = ConfigService::static()->key(ConfigKeyEnum::System);
 		return new Attribute(
 			get: function ($value) use ($service) {
-				$url = empty($value) ? $service->get('avatar') : $value;
-				return $service->get('asset_url') . '/' . ltrim($url, '/');
+				$url = ltrim(empty($value) ? $service->get('avatar') : $value, '/');
+
+				if (!Str::startsWith($url, ['http://', 'https://'])) {
+					return $service->get('asset_url') . '/' . $url;
+				}
+
+				return $url;
 			},
 			set: function ($value) use ($service) {
 				return str_replace($service->get('asset_url'), '', $value);
