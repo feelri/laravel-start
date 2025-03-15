@@ -8,7 +8,9 @@ use App\Exceptions\ForbiddenException;
 use App\Exceptions\ParameterException;
 use App\Exceptions\ResourceException;
 use App\Jobs\ReportExceptionJob;
+use App\Services\ExceptionRecordService;
 use App\Services\ResponseService;
+use App\Services\ToolService;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -22,24 +24,28 @@ $routeConfigs = include __DIR__ . '/other-route-config.php';
  * @param Exceptions $exceptions
  */
 return function (Exceptions $exceptions) use ($routeConfigs) {
-    // 无需报告的异常
-    $exceptions->dontReport([
-        AuthException::class,
-        ForbiddenException::class,
-        ParameterException::class,
-        ResourceException::class
-    ]);
+	// 无需报告的异常
+	$exceptions->dontReport([
+		AuthException::class,
+		ForbiddenException::class,
+		ParameterException::class,
+		ResourceException::class
+	]);
 
-    // 报告异常
-    $exceptions->report(function (Throwable $e) {
-		ReportExceptionJob::report(Request::capture(), $e);
-    })->stop();
+	// 报告异常
+	$exceptions->report(function (Throwable $e) {
+		ExceptionRecordService::static()->report($e);
+	})->stop();
 
-    // 渲染异常
-    $exceptions->render(function (Throwable $e, Request $request) use ($routeConfigs) {
-        if ($request->is('api', 'api/*', ...$routeConfigs['patterns'])) {
+	// 渲染异常
+	$exceptions->render(function (Throwable $e, Request $request) use ($routeConfigs) {
+		if ($request->is('api', 'api/*', ...$routeConfigs['patterns'])) {
 			if ($e instanceof NotFoundHttpException) {
 				throw new ResourceException();
+			}
+
+			if ($e instanceof ValidationException) {
+				throw new ParameterException($e->getMessage());
 			}
 
 			if ($e instanceof BaseException) {
@@ -63,6 +69,6 @@ return function (Exceptions $exceptions) use ($routeConfigs) {
 					code: $code
 				);
 			}
-        }
-    });
+		}
+	});
 };
