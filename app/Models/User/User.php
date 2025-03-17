@@ -14,42 +14,43 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, SoftDeletes;
+	use HasFactory, Notifiable, SoftDeletes;
 
-    /**
-     * 类型转换
-     * @return string[]
-     */
-    public function casts(): array
-    {
-        return [
-            'id'            => 'integer',
-            'account'       => 'string',
-            'mobile'        => 'string',
-            'email'         => 'string',
-            'password'      => 'hashed',
-            'name'          => 'string',
-            'nickname'      => 'string',
-            'avatar'        => 'string',
-            'last_login_at' => 'datetime:Y-m-d H:i:s',
-            'created_at'    => 'datetime:Y-m-d H:i:s',
-            'updated_at'    => 'datetime:Y-m-d H:i:s',
-        ];
-    }
+	/**
+	 * 类型转换
+	 * @return string[]
+	 */
+	public function casts(): array
+	{
+		return [
+			'id'            => 'integer',
+			'account'       => 'string',
+			'mobile'        => 'string',
+			'email'         => 'string',
+			'password'      => 'hashed',
+			'name'          => 'string',
+			'nickname'      => 'string',
+			'avatar'        => 'string',
+			'last_login_at' => 'datetime:Y-m-d H:i:s',
+			'created_at'    => 'datetime:Y-m-d H:i:s',
+			'updated_at'    => 'datetime:Y-m-d H:i:s',
+		];
+	}
 
-    protected $guarded = [];
+	protected $guarded = [];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password', 'deleted_at'
-    ];
+	/**
+	 * The attributes that should be hidden for serialization.
+	 *
+	 * @var array<int, string>
+	 */
+	protected $hidden = [
+		'password', 'deleted_at'
+	];
 
 	/**
 	 * avatar 获取/访问器
@@ -60,8 +61,13 @@ class User extends Authenticatable
 		$service = ConfigService::static()->key(ConfigKeyEnum::System);
 		return new Attribute(
 			get: function ($value) use ($service) {
-				$url = empty($value) ? $service->get('avatar') : $value;
-				return $service->get('asset_url') . '/' . ltrim($url, '/');
+				$url = ltrim(empty($value) ? $service->get('avatar') : $value, '/');
+
+				if (!Str::startsWith($url, ['http://', 'https://'])) {
+					return $service->get('asset_url') . '/' . $url;
+				}
+
+				return $url;
 			},
 			set: function ($value) use ($service) {
 				return trim(str_replace($service->get('asset_url'), '', $value), '/');

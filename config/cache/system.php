@@ -38,6 +38,9 @@ return [
 	// 字典缓存有效期
 	'dictionary_cache_expire' => env('APP_DICTIONARY_CACHE_EXPIRE', 86400),
 
+	// 发生异常是否通过队列报告
+	'exception_queue'	=> env('APP_EXCEPTION_QUEUE', false),
+
 	/**
 	 * 接口速率配置
 	 */

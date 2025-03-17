@@ -11,6 +11,7 @@ use App\Http\AdminApi\Controllers\FileUploadController;
 use App\Http\AdminApi\Controllers\PermissionController;
 use App\Http\AdminApi\Controllers\RoleController;
 use App\Http\AdminApi\Controllers\SmsLogController;
+use App\Http\AdminApi\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -90,6 +91,14 @@ Route::apiResource('file-uploads', FileUploadController::class)
 		'show'    => '文件上传详情',
 		'destroy' => '文件上传删除',
 	]);
+
+/**
+ * 用户
+ */
+Route::apiResource('users', UserController::class)->names([
+	'index' => '用户列表',
+	'show'  => '用户详情',
+]);
 
 /**
  * 配置

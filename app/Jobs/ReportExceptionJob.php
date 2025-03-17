@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Enums\Model\ConfigKeyEnum;
 use App\Enums\QueueEnum;
+use App\Services\ExceptionRecordService;
 use App\Services\Model\ConfigService;
 use App\Services\Notice\NoticeService;
 use App\Services\ToolService;
@@ -17,28 +18,25 @@ class ReportExceptionJob implements ShouldQueue
 {
 	use Queueable;
 
-	public Request $request;
-	public Throwable $exception;
+	public string $errorMessage;
 
 	/**
 	 * Create a new job instance.
 	 */
-	public function __construct(Request $request, Throwable $exception)
+	public function __construct(string $errorMessage)
 	{
-		$this->request = $request;
-		$this->exception = $exception;
+		$this->errorMessage = $errorMessage;
 	}
 
 	/**
 	 * 报告异常
 	 *
-	 * @param Request   $request
-	 * @param Throwable $exception
+	 * @param string $errorMessage
 	 * @return void
 	 */
-	public static function report(Request $request, Throwable $exception): void
+	public static function report(string $errorMessage): void
 	{
-		self::dispatch($request, $exception)->onQueue(QueueEnum::ReportException->value);
+		self::dispatch($errorMessage)->onQueue(QueueEnum::ReportException->value);
 	}
 
 	/**
@@ -46,28 +44,6 @@ class ReportExceptionJob implements ShouldQueue
 	 */
 	public function handle(): void
 	{
-		$request = $this->request;
-		$exception = $this->exception;
-
-		ToolService::static()->ignoreException(function () use ($request, $exception) {
-			// 自定义日志内容
-			$paramText = json_encode($request->all(), JSON_UNESCAPED_UNICODE);
-			$errorMessage = $exception->getMessage(). "\n" .
-				"【".__('exception.class')."】" . $exception::class . "\n" .
-				"【".__('exception.file')."】{$exception->getFile()}:{$exception->getLine()}\n" .
-				"【".__('exception.request_param')."】{$paramText}\n" .
-				"【".__('exception.error_stack')."】\n{$exception->getTraceAsString()} \n";
-			Log::error($errorMessage);
-
-			// webHook 通知
-			if (
-				!config('app.debug') &&
-				ConfigService::static()->key(ConfigKeyEnum::Notice)->get('exception_notice')
-			) {
-				ToolService::static()->ignoreException(function () use ($errorMessage) {
-					NoticeService::static()->notify($errorMessage);
-				});
-			}
-		});
+		ExceptionRecordService::static()->record($this->errorMessage);
 	}
 }
