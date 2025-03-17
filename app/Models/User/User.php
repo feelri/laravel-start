@@ -64,7 +64,7 @@ class User extends Authenticatable
 				return $service->get('asset_url') . '/' . ltrim($url, '/');
 			},
 			set: function ($value) use ($service) {
-				return str_replace($service->get('asset_url'), '', $value);
+				return trim(str_replace($service->get('asset_url'), '', $value), '/');
 			}
 		);
 	}
