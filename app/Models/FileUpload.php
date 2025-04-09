@@ -44,6 +44,21 @@ class FileUpload extends Model
         );
     }
 
+
+	/**
+	 * path 获取/访问器
+	 * @return Attribute
+	 */
+	public function path(): Attribute
+	{
+		$service = ConfigService::static()->key(ConfigKeyEnum::System);
+		return new Attribute(
+			set: function ($value) use ($service) {
+				return str_replace($service->get('asset_url'), '', $value);
+			}
+		);
+	}
+
     /**
      * url 获取/访问器
      *
