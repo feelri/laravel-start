@@ -32,7 +32,7 @@ class AuthController extends Controller
 		$params = $request->only(['account', 'password']);
 		$admin  = Admin::query()->where('account', $params['account'])->first();
 		if (!$admin) {
-			throw new ResourceException(__('message.login.auth_fail'));
+			throw new ResourceException(__('messages.login.auth_fail'));
 		}
 
 		if (!Hash::check($params['password'], $admin->password)) {

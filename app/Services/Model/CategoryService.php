@@ -49,19 +49,20 @@ class CategoryService
 	/**
 	 * 清除缓存
 	 *
-	 * @param PermissionTypeEnum|null $type
+	 * @param CategoryTypeEnum|null $type
 	 * @return bool
 	 */
-	public static function cacheClear(PermissionTypeEnum $type = null): bool
+	public static function cacheClear(CategoryTypeEnum $type = null): bool
 	{
 		$cachePrefix = self::$cachePrefix;
 		$cacheKeys = [];
 		if (empty($type)) {
 			$cacheKeys = [
 				"{$cachePrefix}:all",
-				"{$cachePrefix}:" . PermissionTypeEnum::Menu->value,
-				"{$cachePrefix}:" . PermissionTypeEnum::Permission->value,
 			];
+			foreach (CategoryTypeEnum::cases() as $item) {
+				$cacheKeys[] = "{$cachePrefix}:{$item->value}";
+			}
 		} else {
 			$cacheKeys[] = "{$cachePrefix}:{$type->value}";
 		}

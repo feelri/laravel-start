@@ -3,6 +3,7 @@
 use App\Enums\Model\ConfigKeyEnum;
 use App\Http\AdminApi\Controllers\AdminController;
 use App\Http\AdminApi\Controllers\AuthController;
+use App\Http\AdminApi\Controllers\CategoryController;
 use App\Http\AdminApi\Controllers\ConfigController;
 use App\Http\AdminApi\Controllers\DictionaryController;
 use App\Http\AdminApi\Controllers\DictionaryItemController;
@@ -71,8 +72,8 @@ Route::apiResource('admins', AdminController::class)->names([
 /**
  * 分类
  */
-Route::get('/categories/tree', [ConfigController::class, 'tree'])->name('分类树状结构数据');
-Route::apiResource('categories', ConfigController::class)->names([
+Route::get('/categories/tree', [CategoryController::class, 'tree'])->name('分类树状结构数据');
+Route::apiResource('categories', CategoryController::class)->names([
 	'index'   => '分类列表',
 	'store'   => '分类创建',
 	'update'  => '分类修改',

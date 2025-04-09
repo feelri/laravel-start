@@ -2,7 +2,6 @@
 
 use App\Http\Api\Controllers\EnumController;
 use App\Http\UserApi\Controllers\AuthController;
-use App\Http\UserApi\Controllers\WordBookController;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -23,10 +22,3 @@ Route::post('/auth/bind-wechat-mini-program', [AuthController::class, 'bindByWec
  * 枚举
  */
 Route::get('/enums/{enum}', EnumController::class)->withoutMiddleware(['auth:user']); // 拥有的权限菜单
-
-/**
- * 词书
- */
-Route::get('/word_book/lists', [WordBookController::class, 'lists']);
-Route::get('/word_book/detail/{detail}', [WordBookController::class, 'detail']);
-Route::post('/word_book/purchase', [WordBookController::class, 'purchase']);
