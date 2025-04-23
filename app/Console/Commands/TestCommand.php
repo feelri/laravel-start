@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Events\OrderShipmentStatusUpdated;
+use App\Models\User\User;
 use Illuminate\Console\Command;
 
 class TestCommand extends Command
@@ -25,6 +27,18 @@ class TestCommand extends Command
      */
     public function handle(): void
     {
-		$this->info('Hello, Feelri');
+//		$socketId = '118570228.171161344';
+//		$channelName = 'private-App.Models.User.1';
+//		$stringToAuth = $socketId . ':' . $channelName;
+//		$hashed = hash_hmac('sha256', $stringToAuth, env('REVERB_APP_SECRET'));
+//		dd(env('REVERB_APP_KEY') . ':' . $hashed);
+
+		$user = User::find(1);
+//		$tokenName = 'auth';
+//		$user->tokens()->where('name', $tokenName)->delete();
+//		dd($user->createToken($tokenName));
+
+		$res = OrderShipmentStatusUpdated::dispatch($user, 'Hello World，How are you');
+		dd($res);
     }
 }

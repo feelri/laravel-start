@@ -2,7 +2,8 @@
 
 use App\Http\Api\Controllers\EnumController;
 use App\Http\UserApi\Controllers\AuthController;
-use App\Http\UserApi\Controllers\WordBookController;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -24,9 +25,23 @@ Route::post('/auth/bind-wechat-mini-program', [AuthController::class, 'bindByWec
  */
 Route::get('/enums/{enum}', EnumController::class)->withoutMiddleware(['auth:user']); // 拥有的权限菜单
 
-/**
- * 词书
- */
-Route::get('/word_book/lists', [WordBookController::class, 'lists']);
-Route::get('/word_book/detail/{detail}', [WordBookController::class, 'detail']);
-Route::post('/word_book/purchase', [WordBookController::class, 'purchase']);
+
+Route::post('/broadcasting/auth', function (Request $request) {
+// channel name will be something like private-room-231 where 231 is accountId
+	$socketId = $request->input('socket_id');
+	$channelName = $request->input('channel_name');
+
+	$channelPieces = explode('-', $channelName);
+	$channelAccount = end($channelPieces);
+
+	// this verifies account id against a server known value
+//	if ($channelAccount != $request->attributes->get('auth_account_id')) {
+//		return new JsonResponse(['auth' => 'INVALID'], 403);
+//	}
+
+	// this generates the required format for the response
+	$stringToAuth = $socketId . ':' . $channelName;
+	$hashed = hash_hmac('sha256', $stringToAuth, env('REVERB_APP_SECRET'));
+
+	return new JsonResponse(['auth' => env('REVERB_APP_KEY') . ':' . $hashed]);
+});
