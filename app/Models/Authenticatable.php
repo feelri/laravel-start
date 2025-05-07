@@ -19,6 +19,16 @@ class Authenticatable extends User
 	public NewAccessToken $newAccessToken;
 
 	/**
+	 * 准备日期以进行数组/JSON 序列化。
+	 * @param DateTimeInterface $date
+	 * @return string
+	 */
+	protected function serializeDate(DateTimeInterface $date): string
+	{
+		return $date->format('Y-m-d H:i:s');
+	}
+
+	/**
 	 * avatar 获取/访问器
 	 *
 	 * @return Attribute

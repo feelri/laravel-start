@@ -14,6 +14,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
+/**
+ * 系统异常日志队列
+ */
 class ReportExceptionJob implements ShouldQueue
 {
 	use Queueable;
