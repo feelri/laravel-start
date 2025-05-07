@@ -52,23 +52,25 @@ class ToolService
         $languages = array_keys($languages);
         return $languages[0] ?? $default;
     }
-
+	
 	/**
 	 * 抑制异常
 	 *
 	 * @param Closure      $callback
 	 * @param mixed|null   $default
 	 * @param Closure|null $errorHandler
+	 * @param Closure|null $finallyHandler
 	 * @return mixed
 	 */
-	public function ignoreException(Closure $callback, mixed $default = null, Closure $errorHandler = null): mixed
+	public function ignoreException(Closure $callback, mixed $default = null, Closure $errorHandler = null, Closure $finallyHandler = null): mixed
 	{
 		try {
-			return $callback();
+			$result = $callback();
+			$default = $result ?? $default;
 		} catch (\Throwable $e) {
-			if ($errorHandler) {
-				$errorHandler($e);
-			}
+			$errorHandler && $errorHandler($e);
+		} finally {
+			$finallyHandler && $finallyHandler();
 		}
 		return $default;
 	}
