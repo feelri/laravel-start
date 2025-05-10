@@ -79,6 +79,7 @@ class Alibaba extends \App\Services\Cloud\Alibaba\Alibaba implements SmsInterfac
 	 * @return array
 	 * @throws ClientException
 	 * @throws ServerException
+	 * @throws Exception
 	 */
 	public function send($mobile, $params): array
 	{
@@ -93,13 +94,18 @@ class Alibaba extends \App\Services\Cloud\Alibaba\Alibaba implements SmsInterfac
 				JSON_UNESCAPED_UNICODE
 			))
 			->request();
+		$data = $response->toArray();
+
+		if ($data['Code'] !== 'OK') {
+			throw new Exception($data['Message']);
+		}
 
 		// 记录请求日志
 		$this->record([
 			'mobile'   => "+86{$mobile}",
 			'driver'   => SmsDriverEnum::Alibaba->value,
 			'request'  => $response->getRequest()->data,
-			'response' => $response->toArray(),
+			'response' => $data,
 			'status'   => SmsStatusEnum::Succeed->value,
 		]);
 

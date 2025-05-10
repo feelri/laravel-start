@@ -19,7 +19,7 @@ class AuthRegisterRequest extends BaseRequest
 			'nickname' => 'required|string',
 			'avatar'   => 'required|string',
 			'mobile'   => 'required|string',
-			'code'     => 'required|string',
+			'code'     => 'required|string|verify:sms,loginCode',
 		];
 	}
 

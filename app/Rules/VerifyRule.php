@@ -9,6 +9,8 @@ use \Closure;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Contracts\Validation\DataAwareRule;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Mews\Captcha\Facades\Captcha;
 
@@ -17,8 +19,39 @@ use Mews\Captcha\Facades\Captcha;
  * 人机验证
  * @package App\Rules
  */
-class VerifyRule implements ValidationRule
+class VerifyRule implements DataAwareRule, ValidationRule
 {
+	/**
+	 * 所有正在验证的数据。
+	 *
+	 * @var array<string, mixed>
+	 */
+	protected array $data = [];
+
+	/**
+	 * 验证规则的参数。
+	 *
+	 * @var array<string, mixed>
+	 */
+	protected mixed $parameters = [];
+
+	public function __construct(array $parameters = [])
+	{
+		$this->parameters = $parameters;
+	}
+
+	/**
+	 * 设置正在验证的数据。
+	 *
+	 * @param  array<string, mixed>  $data
+	 */
+	public function setData(array $data): static
+	{
+		$this->data = $data;
+
+		return $this;
+	}
+
 	/**
 	 * 验证
 	 *
@@ -35,7 +68,9 @@ class VerifyRule implements ValidationRule
 		}
 
 		// 返回字符串 captcha
-		$driver = ConfigService::static()->key(ConfigKeyEnum::System)->get('captcha');
+		$driver = empty($this->parameters[0])
+			? ConfigService::static()->key(ConfigKeyEnum::System)->get('captcha')
+			: $this->parameters[0];
 		if (!method_exists($this, $driver)) {
 			$fail("Method {$driver} does not exist.");
 			return;
@@ -91,6 +126,24 @@ class VerifyRule implements ValidationRule
 		// 验证码验证
 		$check = Captcha::check_api($value, $key, config('captcha.driver'));
 		if (!$check) {
+			$fail(__('validation.verify'));
+		}
+	}
+
+	/**
+	 * 短信验证
+	 *
+	 * @param mixed   $code
+	 * @param Closure $fail
+	 * @return void
+	 */
+	private function sms(mixed $code, Closure $fail): void
+	{
+		$type = $this->parameters[1];
+		$target = empty($this->parameters[1]) ? 'mobile' : $this->parameters[1];
+		$cacheCode = Cache::get("sms:$type:{$this->data[$target]}"); // 15分钟
+
+		if ($cacheCode !== $code) {
 			$fail(__('validation.verify'));
 		}
 	}

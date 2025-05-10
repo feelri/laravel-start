@@ -34,27 +34,27 @@ class BaseRequest extends FormRequest
 	 * @return void
 	 * @throws Exception
 	 */
-    public function prepareForValidation(): void
-    {
-        /**
-         * 注册内置验证规则
-         */
+	public function prepareForValidation(): void
+	{
+		/**
+		 * 注册内置验证规则
+		 */
 		ValidatorFacade::extend('bank_account', function($attribute, $value, $parameters, $validator) {
-            $rule = new BankAccountRule();
-            return $rule->passes($attribute, $value);
-        });
+			$rule = new BankAccountRule();
+			return $rule->passes($attribute, $value);
+		});
 		ValidatorFacade::extend('id_card', function($attribute, $value, $parameters, $validator) {
-            $rule = new IdCardRule();
-            return $rule->passes($attribute, $value);
-        });
+			$rule = new IdCardRule();
+			return $rule->passes($attribute, $value);
+		});
 		ValidatorFacade::extend('mobile', function($attribute, $value, $parameters, $validator) {
-            $rule = new IdCardRule();
-            return $rule->passes($attribute, $value);
-        });
+			$rule = new IdCardRule();
+			return $rule->passes($attribute, $value);
+		});
 		ValidatorFacade::extend('verify', function($attribute, $value, $parameters, $validator) {
-			$rule = InvokableValidationRule::make(new VerifyRule());
+			$rule = InvokableValidationRule::make(new VerifyRule($parameters));
 			$rule->setValidator($validator);
 			return $rule->passes($attribute, $value);
-        });
-    }
+		});
+	}
 }

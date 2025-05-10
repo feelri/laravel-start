@@ -46,7 +46,7 @@ class AuthController extends Controller
 	public function login(AuthLoginRequest $request): JsonResponse
 	{
 		$params = $request->only(['mobile', 'password']);
-		$user = User::query()->where('mobile', $params['account'])->first();
+		$user = User::query()->where('mobile', $params['mobile'])->first();
 		if (!$user) {
 			throw new ResourceException(__('message.login.auth_fail'));
 		}
@@ -138,7 +138,7 @@ class AuthController extends Controller
 			'openid'      => $session['openid'],
 		];
 		$oauth = Oauth::query()->with('source')->where($where)->first();
-		if (!$oauth) {
+		if (!$oauth || !$oauth->source) {
 			$raw = (new OpenSSLTokenService)->encrypt($where);
 			return $this->response(['raw'=>$raw]);
 		}
@@ -215,7 +215,9 @@ class AuthController extends Controller
 	 */
 	public function me(Request $request): JsonResponse
 	{
-		return $this->response($request->user());
+		$user = $request->user();
+		$user->load(['level']);
+		return $this->response($user);
 	}
 
 	/**
@@ -237,12 +239,26 @@ class AuthController extends Controller
 	 */
 	public function updateMe(UpdateMeRequest $request): JsonResponse
 	{
-		$params         = $request->only(['name', 'avatar']);
+		$params         = $request->only(['name', 'nickname', 'avatar', 'gender']);
 		$worker         = $request->user();
-		$worker->name   = $params['name'];
-		$worker->avatar = $params['avatar'] ?? '';
-		$worker->save();
 
+		if (!empty($params['name'])) {
+			$worker->name   = $params['name'];
+		}
+
+		if (!empty($params['nickname'])) {
+			$worker->nickname = $params['nickname'];
+		}
+
+		if (!empty($params['avatar'])) {
+			$worker->avatar = $params['avatar'];
+		}
+
+		if (!empty($params['gender'])) {
+			$worker->gender = $params['gender'];
+		}
+
+		$worker->save();
 		return $this->success();
 	}
 
