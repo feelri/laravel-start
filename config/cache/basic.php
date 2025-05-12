@@ -8,4 +8,9 @@ return [
 	'company_site'       => env('APP_URL', ''),
 	'icp_sn'             => '',
 	'icp_link'           => 'https://beian.miit.gov.cn',
+	'customer_service'	=> [
+		'qrcode'  => '',
+		'contact' => '',
+		'link'    => '',
+	]
 ];

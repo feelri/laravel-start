@@ -221,4 +221,15 @@ return [
 
     'max_execution_time' => 30,
 
+
+	// ... 其他配置 ...
+	'swoole' => [
+		'options' => [
+			'package_max_length' => 200 * 1024 * 1024, // 200MB
+			'upload_tmp_dir' => storage_path('tmp'),
+			'http_parse_post' => true,
+			'http_parse_files' => true,
+			'upload_max_filesize' => '200M',
+		],
+	],
 ];

@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('user', function (Blueprint $table) {
             $table->id();
-            $table->string('mobile', 20)->unique()->comment('手机号');
+            $table->string('mobile', 20)->comment('手机号');
             $table->string('password', 100)->nullable()->comment('密码');
             $table->string('name', 50)->nullable()->comment('姓名');
             $table->string('nickname', 50)->nullable()->comment('昵称');
@@ -24,7 +24,9 @@ return new class extends Migration
             $table->dateTime('created_at')->nullable()->comment('创建时间');
             $table->dateTime('updated_at')->nullable()->comment('修改时间');
             $table->dateTime('deleted_at')->nullable()->comment('删除时间');
-        });
+
+			$table->unique(['mobile', 'deleted_at']);
+		});
         DB::unprepared('ALTER TABLE `user` comment "用户表"');
     }
 
