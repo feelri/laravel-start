@@ -9,7 +9,8 @@ use App\Enums\CollectTrait;
  */
 enum CategoryTypeEnum: string
 {
-    use CollectTrait;
+	use CollectTrait;
 
-    case FileUpload = 'file-upload'; // 文件上传
+	case FileUpload = 'file_upload'; // 文件上传
+	case Dictionary = 'dictionary'; // 字典
 }

@@ -20,7 +20,8 @@
         "mews/captcha": "^3.4",
         "qiniu/php-sdk": "^7.14",
         "tencentcloud/tencentcloud-sdk-php": "^3.0",
-        "w7corp/easywechat": "^6.17"
+        "w7corp/easywechat": "^6.17",
+        "ext-pdo": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

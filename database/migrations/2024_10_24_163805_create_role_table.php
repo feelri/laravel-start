@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
 			$table->string('name', 50)->default('')->comment('名称');
 			$table->string('description')->default('')->comment('描述');
-			$table->bigInteger('rank')->default(0)->comment('菜单排序，最大越靠前');
+			$table->bigInteger('rank')->default(0)->comment('菜单排序，最小越靠前');
 			$table->tinyInteger('is_top_level')->default(0)->comment('是否未最高权限角色：0-否、1-是');
 			$table->dateTime('created_at')->nullable()->comment('创建时间');
 			$table->dateTime('updated_at')->nullable()->comment('修改时间');

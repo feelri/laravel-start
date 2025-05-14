@@ -10,7 +10,7 @@ class Category extends Model
     use SoftDeletes;
 	use NodeTrait;
 
-	protected $hidden = ['left', 'right', 'created_at', 'updated_at'];
+	protected $hidden = ['left', 'right', 'created_at', 'updated_at', 'deleted_at'];
 
 	public function getLftName(): string
 	{

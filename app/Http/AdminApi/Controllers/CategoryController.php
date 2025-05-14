@@ -32,7 +32,9 @@ class CategoryController extends Controller
 				$query->where('name', 'like', "%{$params['keyword']}%");
 			});
 		}
-		$categories = $categories->paginate($params['limit'] ?? PaginateEnum::Default->value);
+		$categories = $categories
+			->orderBy('rank')
+			->paginate($params['limit'] ?? PaginateEnum::Default->value);
 		return $this->response($categories);
 	}
 
@@ -44,7 +46,7 @@ class CategoryController extends Controller
 	 */
 	public function store(SaveRequest $request): JsonResponse
 	{
-		$params   = $request->only(['type', 'parent_id', 'name', 'icon', 'rank']);
+		$params   = $request->only(['type', 'parent_id', 'name', 'description', 'icon', 'rank']);
 		$category = Category::query()->create($params);
 		CategoryService::cacheClear(CategoryTypeEnum::tryFrom($params['type']));
 		return $this->response(['id' => $category->id]);
@@ -70,12 +72,13 @@ class CategoryController extends Controller
 	 */
 	public function update(SaveRequest $request, Category $category): JsonResponse
 	{
-		$params              = $request->only(['type', 'parent_id', 'name', 'icon', 'rank']);
-		$category->type      = $params['type'] ?? CategoryTypeEnum::FileUpload->value;
-		$category->parent_id = $params['parent_id'] ?? 0;
-		$category->name      = $params['name'] ?? '';
-		$category->icon      = $params['icon'] ?? '';
-		$category->rank      = $params['icon'] ?? 0;
+		$params                = $request->only(['type', 'parent_id', 'name', 'description', 'icon', 'rank']);
+		$category->type        = $params['type'] ?? CategoryTypeEnum::FileUpload->value;
+		$category->parent_id   = $params['parent_id'] ?? 0;
+		$category->name        = $params['name'] ?? '';
+		$category->description = $params['description'] ?? '';
+		$category->icon        = $params['icon'] ?? '';
+		$category->rank        = $params['icon'] ?? 0;
 		$category->save();
 		CategoryService::cacheClear(CategoryTypeEnum::tryFrom($params['type']));
 		return $this->success();

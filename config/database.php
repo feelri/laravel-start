@@ -59,7 +59,8 @@ return [
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+				PDO::ATTR_PERSISTENT => true,
+			]) : [],
         ],
 
         'mariadb' => [
@@ -148,7 +149,7 @@ return [
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
             'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
-        ],
+		],
 
         'default' => [
             'url' => env('REDIS_URL'),
@@ -157,6 +158,9 @@ return [
             'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_DB', '0'),
+			'persistent' => true, // 是否长连接
+			'timeout' => 5, // 连接超时时间（秒）
+			'retry_interval' => 10, // 重连间隔时间（秒）
         ],
 
         'cache' => [
@@ -166,6 +170,9 @@ return [
             'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_CACHE_DB', '1'),
+			'persistent' => true, // 是否长连接
+			'timeout' => 5, // 连接超时时间（秒）
+			'retry_interval' => 10, // 重连间隔时间（秒）
         ],
 
     ],

@@ -26,7 +26,7 @@ return new class extends Migration
 			$table->string('component', 100)->default('')->comment('对应前端组件路径（不包含后缀）');
 			$table->tinyInteger('is_show')->default(1)->comment('是否显示：0-否、1-是');
 			$table->tinyInteger('is_disable')->default(0)->comment('是否禁用：0-否、1-是');
-			$table->bigInteger('rank')->default(0)->comment('菜单排序，最大越靠前');
+			$table->bigInteger('rank')->default(0)->comment('菜单排序，最小越靠前');
 			$table->dateTime('created_at')->nullable()->comment('创建时间');
 			$table->dateTime('updated_at')->nullable()->comment('修改时间');
 			$table->dateTime('deleted_at')->nullable()->comment('删除时间');

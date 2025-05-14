@@ -129,7 +129,7 @@ class PermissionService
 				$result = $result->where('type', $type->value);
 			}
 
-			$data = $result->orderByRaw('`rank` desc, id asc')
+			$data = $result->orderByRaw('`rank` asc, id asc')
 				->get()
 				->append('meta')
 				->toTree()

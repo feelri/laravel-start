@@ -3,7 +3,6 @@
 namespace App\Services\Model;
 
 use App\Enums\Model\CategoryTypeEnum;
-use App\Enums\Model\PermissionTypeEnum;
 use App\Models\Category;
 use App\Services\ToolService;
 use Illuminate\Support\Facades\Cache;
@@ -34,7 +33,7 @@ class CategoryService
 				$result = $result->where('type', $type->value);
 			}
 			$data = $result->selectRaw('id, parent_id, type, name, icon, `rank`')
-				->orderByRaw('`rank` desc, id asc')
+				->orderByRaw('`rank` asc, id asc')
 				->get()
 				->toArray();
 			if (!empty($data)) {
