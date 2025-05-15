@@ -22,6 +22,7 @@ return new class extends Migration
 			$table->string('description')->default('')->comment('描述');
 			$table->string('icon')->default('')->comment('icon');
 			$table->bigInteger('rank')->default(0)->comment('排序，最小越靠前');
+			$table->string('nature_mark', 50)->default('')->comment('自然标记，用于特定场景判断');
 			$table->dateTime('created_at')->nullable()->comment('创建时间');
 			$table->dateTime('updated_at')->nullable()->comment('修改时间');
 			$table->dateTime('deleted_at')->nullable()->comment('删除时间');

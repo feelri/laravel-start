@@ -32,7 +32,7 @@ class CategoryService
 			if ($type) {
 				$result = $result->where('type', $type->value);
 			}
-			$data = $result->selectRaw('id, parent_id, type, name, icon, `rank`')
+			$data = $result->selectRaw('id, parent_id, type, name, icon, `rank`, nature_mark')
 				->orderByRaw('`rank` asc, id asc')
 				->get()
 				->toArray();
