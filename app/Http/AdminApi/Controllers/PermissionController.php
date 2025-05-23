@@ -32,7 +32,7 @@ class PermissionController extends Controller
 					->orWhere('component', 'like', "%{$params['keyword']}%");
 			});
 		}
-		$permissions = $permissions->paginate($params['limit'] ?? PaginateEnum::Default->value);
+		$permissions = $permissions->orderBy('rank')->paginate($params['limit'] ?? PaginateEnum::Default->value);
 		return $this->response($permissions);
 	}
 

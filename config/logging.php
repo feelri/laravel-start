@@ -132,6 +132,10 @@ return [
             'path' => storage_path('logs/laravel/'.date('Y/m/Y-m-d').'.log'),
             'level' => env('LOG_LEVEL', 'debug'),
         ],
+		'callback'    =>  [
+			'driver' => 'single',
+			'path' => storage_path('logs/callback/'.date('Y/m/Y-m-d').'.log'),
+			'level' => env('LOG_LEVEL', 'debug'),
+		],
     ],
-
 ];

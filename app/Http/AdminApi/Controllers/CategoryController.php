@@ -78,7 +78,7 @@ class CategoryController extends Controller
 		$category->name        = $params['name'] ?? '';
 		$category->description = $params['description'] ?? '';
 		$category->icon        = $params['icon'] ?? '';
-		$category->rank        = $params['icon'] ?? 0;
+		$category->rank        = $params['rank'] ?? 0;
 		$category->nature_mark = $params['nature_mark'] ?? '';
 		$category->save();
 		CategoryService::cacheClear(CategoryTypeEnum::tryFrom($params['type']));

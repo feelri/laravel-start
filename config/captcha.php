@@ -4,7 +4,7 @@ use Illuminate\Filesystem\Filesystem;
 
 return [
 	'disable'        => env('CAPTCHA_DISABLE', false),
-	'characters'     => ['3', '4', '6', '7', '8', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'k', 'm', 'n', 'p', 'r', 'u', 'x', 'y', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'M', 'N', 'P', 'R', 'U', 'X', 'Y'],
+	'characters'     => ['3', '4', '6', '7', '8', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'k', 'm', 'n', 'p', 'r', 'u', 'x', 'y', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'M', 'N', 'P', 'R', 'U', 'X', 'Y'],
 	'fontsDirectory' => public_path('source/captcha/fonts'),
 	'driver'         => 'default',
 	'default'        => [

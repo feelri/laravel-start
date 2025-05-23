@@ -6,6 +6,7 @@ use App\Enums\BoolIntEnum;
 use App\Enums\Model\PermissionTypeEnum;
 use App\Exceptions\ForbiddenException;
 use App\Models\Admin\Admin;
+use App\Models\Admin\RolePermission;
 use App\Models\Permission\Permission;
 use App\Services\ToolService;
 use Illuminate\Support\Facades\Cache;
@@ -174,28 +175,20 @@ class PermissionService
 	 */
 	public function allPermissions(PermissionTypeEnum $type = null): array
 	{
-		$admin = $this->admin->load([
-			'roles.permissions' => function ($query) use ($type) {
-				$query->as('permission')
-					->selectRaw('
-						permission.id, permission.parent_id, permission.type, permission.name, permission.path, permission.component,
-						 permission.uri, permission.method, permission.icon, permission.`rank`
-					');
-			}
-		]);
+		$admin = $this->admin->load(['roles']);
+		$roleIds = $admin->roles?->pluck('id');
+		$rolePermissions = RolePermission::query()->whereIn('role_id', $roleIds)->get();
+		$permissionIds = $rolePermissions->pluck('permission_id');
 
-		foreach ($admin->roles as &$role) {
-			foreach ($role->permissions as &$permission) {
-				unset($permission->permission);
-				$permission->append('meta');
-			}
-		}
-		$adminData = $admin->toArray();
-
-		$adminPermissions = array_column($adminData['roles'], 'permissions');
-		$adminPermissions = array_merge(...$adminPermissions);
+		$adminPermissions  = Permission::query()
+			->whereIn('id', $permissionIds)
+			->selectRaw('id, parent_id, type, name, path, component, icon, uri, method, `rank`')
+			->get()
+			->append('meta')
+			->toArray();
 		$menus = [];
 		$permissions = [];
+
 		foreach ($adminPermissions as $adminPermission) {
 			if ((int) $adminPermission['type'] === PermissionTypeEnum::Menu->value) {
 				$menus[$adminPermission['id']] = $adminPermission;

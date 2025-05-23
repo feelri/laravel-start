@@ -8,7 +8,7 @@ use App\Models\FileUpload;
 use App\Services\Model\ConfigService;
 use Exception;
 
-class UploadService implements AsyncUploadInterface
+class UploadService
 {
 	/**
 	 * 驱动
